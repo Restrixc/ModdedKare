@@ -609,18 +609,14 @@ public class Kobold : GeneHolder, IGrabbable, IPunObservable, IPunInstantiateMag
 
 	private IEnumerator DisplayMessage(string message, float duration)
 	{
-		chatText.text = message;
-		chatText.alpha = 1f;
 		duration += (float)message.Length * textSpeedPerCharacter;
 		yield return new WaitForSeconds(duration);
 		float endTime = Time.time + 1f;
 		while (Time.time < endTime)
 		{
-			chatText.alpha = endTime - Time.time;
+			
 			yield return null;
 		}
-		chatText.alpha = 1f;
-		chatText.text = gameObject.GetComponent<cmod.KoboldExtension>().koboldName;
 	}
 
 	public void InteractTo(Vector3 worldPosition, Quaternion worldRotation)
