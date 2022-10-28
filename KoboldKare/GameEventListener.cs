@@ -1,0 +1,29 @@
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace KoboldKare;
+
+public class GameEventListener<T> : MonoBehaviour
+{
+	public GameEvent<T> Event;
+
+	public UnityEvent Response;
+
+	private void OnEnable()
+	{
+		Event.AddListener(OnEventRaised);
+	}
+
+	private void OnDisable()
+	{
+		Event.RemoveListener(OnEventRaised);
+	}
+
+	public void OnEventRaised(T arg)
+	{
+		if (base.isActiveAndEnabled)
+		{
+			Response.Invoke();
+		}
+	}
+}
