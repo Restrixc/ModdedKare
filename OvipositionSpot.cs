@@ -68,6 +68,7 @@ public class OvipositionSpot : GenericUsable, IAnimationStationSet
 	private IEnumerator EggLayingRoutine()
 	{
 		yield return new WaitForSeconds(6f);
+        
 		Kobold i = station.info.user;
 		if (i == null || !i.photonView.IsMine || !i.TryConsumeEnergy(1))
 		{
@@ -101,37 +102,50 @@ public class OvipositionSpot : GenericUsable, IAnimationStationSet
 				}
 			}
 		}
-		float eggVolume = i.bellyContainer.GetVolumeOf(egg);
-		i.bellyContainer.OverrideReagent(egg, 0f);
-		if (targetPenetrable == null)
+		if (true)
 		{
-			Debug.LogError("Kobold without a hole tried to make an egg!");
-			yield break;
+			//Used to fuck with live birth
+			GameObject spawnKoblood = PhotonNetwork.InstantiateRoomObject("Kobold", targetPenetrable.transform.position + targetPenetrable.transform.forward, Quaternion.identity, 0);
+			Kobold k = spawnKoblood.GetComponent<Kobold>();
+			KoboldGenes mixedGenes = KoboldGenes.Mix(i.GetComponent<Kobold>().GetGenes(), i.bellyContainer.GetGenes());
+			k.SetGenes(mixedGenes);
+			targetPenetrable.GetComponent<Kobold>().bellyContainer.Spill(targetPenetrable.GetComponent<Kobold>().bellyContainer.volume);
 		}
-		CatmullSpline path = targetPenetrable.GetSplinePath();
-		KoboldGenes mixedGenes = KoboldGenes.Mix(i.GetComponent<Kobold>().GetGenes(), i.bellyContainer.GetGenes());
-		Penetrator d = PhotonNetwork.Instantiate(eggPrefab.photonName, path.GetPositionFromT(0f), Quaternion.LookRotation(path.GetVelocityFromT(0f).normalized, Vector3.up), 0, new object[1] { mixedGenes }).GetComponentInChildren<Penetrator>();
-		if (!(d == null))
-		{
-			ReagentContents eggContents = new ReagentContents();
-			eggContents.AddMix(ReagentDatabase.GetReagent("ScrambledEgg").GetReagent(eggVolume));
-			d.gameObject.GetPhotonView().RPC("ForceMixRPC", RpcTarget.All, eggContents, i.photonView.ViewID);
-			base.photonView.RPC("EggLayed", RpcTarget.All, d.GetComponentInParent<PhotonView>().ViewID);
-			Rigidbody body = d.GetComponentInChildren<Rigidbody>();
-			body.isKinematic = true;
-			d.Penetrate(targetPenetrable);
-			float pushAmount = 0f;
-			while (pushAmount < d.GetWorldLength())
+        else
+        {
+			float eggVolume = i.bellyContainer.GetVolumeOf(egg);
+			i.bellyContainer.OverrideReagent(egg, 0f);
+			if (targetPenetrable == null)
 			{
-				CatmullSpline p = targetPenetrable.GetSplinePath();
-				Vector3 position = p.GetPositionFromT(0f);
-				Vector3 tangent = p.GetVelocityFromT(0f).normalized;
-				pushAmount += Time.deltaTime * 0.15f;
-				body.transform.position = position - tangent * pushAmount;
-				yield return null;
+				Debug.LogError("Kobold without a hole tried to make an egg!");
+				yield break;
 			}
-			body.isKinematic = false;
+			CatmullSpline path = targetPenetrable.GetSplinePath();
+			KoboldGenes mixedGenes = KoboldGenes.Mix(i.GetComponent<Kobold>().GetGenes(), i.bellyContainer.GetGenes());
+			Penetrator d = PhotonNetwork.Instantiate(eggPrefab.photonName, path.GetPositionFromT(0f), Quaternion.LookRotation(path.GetVelocityFromT(0f).normalized, Vector3.up), 0, new object[1] { mixedGenes }).GetComponentInChildren<Penetrator>();
+			if (!(d == null))
+			{
+				ReagentContents eggContents = new ReagentContents();
+				eggContents.AddMix(ReagentDatabase.GetReagent("ScrambledEgg").GetReagent(eggVolume));
+				d.gameObject.GetPhotonView().RPC("ForceMixRPC", RpcTarget.All, eggContents, i.photonView.ViewID);
+				base.photonView.RPC("EggLayed", RpcTarget.All, d.GetComponentInParent<PhotonView>().ViewID);
+				Rigidbody body = d.GetComponentInChildren<Rigidbody>();
+				body.isKinematic = true;
+				d.Penetrate(targetPenetrable);
+				float pushAmount = 0f;
+				while (pushAmount < d.GetWorldLength())
+				{
+					CatmullSpline p = targetPenetrable.GetSplinePath();
+					Vector3 position = p.GetPositionFromT(0f);
+					Vector3 tangent = p.GetVelocityFromT(0f).normalized;
+					pushAmount += Time.deltaTime * 0.15f;
+					body.transform.position = position - tangent * pushAmount;
+					yield return null;
+				}
+				body.isKinematic = false;
+			}
 		}
+		
 	}
 
 	public ReadOnlyCollection<AnimationStation> GetAnimationStations()
