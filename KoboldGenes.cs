@@ -7,6 +7,8 @@ using UnityEngine;
 [Serializable]
 public class KoboldGenes : ISavable
 {
+	public string testingillegalshit = "";
+
 	public float maxEnergy = 5f;
 
 	public float baseSize = 20f;
@@ -148,14 +150,14 @@ public class KoboldGenes : ISavable
 		c.hue = (byte)Mathf.RoundToInt(FloatExtensions.CircularLerp(hueAngA, hueAngB, 0.5f) * 255f);
 		c.brightness = (byte)Mathf.RoundToInt(Mathf.Lerp((float)(int)a.brightness / 255f, (float)(int)b.brightness / 255f, 0.5f) * 255f);
 		c.saturation = (byte)Mathf.RoundToInt(Mathf.Lerp((float)(int)a.saturation / 255f, (float)(int)b.saturation / 255f, 0.5f) * 255f);
-		c.bellySize = Mathf.Lerp(a.bellySize, b.bellySize, 0.5f);
-		c.metabolizeCapacitySize = Mathf.Lerp(a.metabolizeCapacitySize, b.metabolizeCapacitySize, 0.5f);
-		c.dickSize = Mathf.Lerp(a.dickSize, b.dickSize, 0.5f);
-		c.ballSize = Mathf.Lerp(a.ballSize, b.ballSize, 0.5f);
-		c.fatSize = Mathf.Lerp(a.fatSize, b.fatSize, 0.5f);
-		c.baseSize = Mathf.Lerp(a.baseSize, b.baseSize, 0.5f);
-		c.maxEnergy = Mathf.Lerp(a.maxEnergy, b.maxEnergy, 0.5f);
-		c.dickThickness = Mathf.Lerp(a.dickThickness, b.dickThickness, 0.5f);
+		c.bellySize = Mathf.Lerp(a.bellySize * 0.85f, b.bellySize * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.metabolizeCapacitySize = Mathf.Lerp(a.metabolizeCapacitySize, b.metabolizeCapacitySize, UnityEngine.Random.Range(0f, 1f));
+		c.dickSize = Mathf.Lerp(a.dickSize * 0.85f, b.dickSize * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.ballSize = Mathf.Lerp(a.ballSize * 0.85f, b.ballSize * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.fatSize = Mathf.Lerp(a.fatSize * 0.85f, b.fatSize * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.baseSize = Mathf.Lerp(a.baseSize * 0.85f, b.baseSize * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.maxEnergy = Mathf.Lerp(a.maxEnergy * 0.85f, b.maxEnergy * 1.15f, UnityEngine.Random.Range(0f, 1f));
+		c.dickThickness = Mathf.Lerp(a.dickThickness * 0.85f, b.dickThickness * 1.15f, UnityEngine.Random.Range(0f,1f));
 		c.grabCount = (byte)Mathf.Max(Mathf.RoundToInt(Mathf.Lerp((int)a.grabCount, (int)b.grabCount, 0.5f)), 1);
 		return c;
 	}

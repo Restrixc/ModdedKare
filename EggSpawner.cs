@@ -62,17 +62,24 @@ public class EggSpawner : MonoBehaviour
 		{
 			return null;
 		}
-		Rigidbody body = d.GetComponentInChildren<Rigidbody>();
-		d.GetComponent<GenericReagentContainer>().OverrideReagent(ReagentDatabase.GetReagent("ScrambledEgg"), eggVolume);
-		body.isKinematic = true;
-		d.Penetrate(targetPenetrable);
-		penetrators.Add(new PenetratorCoupler
-		{
-			penetrable = targetPenetrable,
-			penetrator = d,
-			body = body,
-			pushAmount = 0f
-		});
+		if (false)
+        {
+			Rigidbody body = d.GetComponentInChildren<Rigidbody>();
+			d.GetComponent<GenericReagentContainer>().OverrideReagent(ReagentDatabase.GetReagent("ScrambledEgg"), eggVolume);
+			body.isKinematic = true;
+			d.Penetrate(targetPenetrable);
+			penetrators.Add(new PenetratorCoupler
+			{
+				penetrable = targetPenetrable,
+				penetrator = d,
+				body = body,
+				pushAmount = 0f
+			});
+        }
+        else
+        {
+			Debug.Log("Trooll");
+        }
 		return d;
 	}
 
